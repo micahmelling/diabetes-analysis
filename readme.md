@@ -1,13 +1,16 @@
 # Predict Readmission Rates
 
 # EDA
-Data is stored in intended to be stored in the data directory. The data is fairly clean, but we need to ensure
+Data is intended to be stored in the data directory. The data is fairly clean, but we need to ensure
 that variables are cast to the correct type. We also need to improve the categorical coding of certain variables. From
-EDA, we say a moderate connection to the chosen target of "readmitted". We opted to turn this into a binary variable. 
+EDA, we see a moderate connection to the chosen target of "readmitted". We opted to turn this into a binary variable for modeling. 
+We mostly relied on statistical correlations (mutual information) to get a quick feel for important variables.
 For computational purposes, only certain variables were chosen to be able to train models in the allotted amount of time.
-Overall, we were aware of feature leakage and chose to stick with seemingly "safe" features when subsetting.
+Overall, we were aware of feature leakage and chose to stick with seemingly "safe" features when subsetting data.
 
 # Modeling
+Our modeling problem was to predict the likelihood of readmission. 
+
 We used hyperopt to predict the probability of readmission. We trained a single random forest classification model,
 though our set up allows us to easily add models. Consequently, this is the model that was put into the API. We optimized
 the model for calibrated predictions, and it appeared to do solidly given the time constraints on training. In the future,
@@ -18,11 +21,12 @@ we would add more models and evaluation / explanation techniques.
 2) Use unsupervised ML to find similar cases and use that to inform treatment plans.
 3) Treat this as more of a research project to tease out the effect that certain variables have on readmission. In other words, move beyond prediction.
 
-In sum, these will help with proactive treatment and planning to improve care and isolate important factors. We also need
+In sum, these goals will help with proactive treatment and planning to improve care and isolate important factors. We also need
 to retrain the model if we use predictions to influence the environment. We need to be aware of the feedback loop we might create.
 
 ## API Section
-Use this API to pass in a json payload to get a predicted probability or readmission.
+Use the API (app.py) to pass in a json payload to get a predicted probability or readmission.
+
 Send POST request to /predict endpoint. Locally, you can run this the Flask dev server and hit 
 localhost over port 5000. 
 
@@ -66,9 +70,8 @@ $ curl -X POST http://localhost:5000/predict \
   }'
 
 ```
-
 You can turn this app into a containerized app via Docker using the Dockerfile. It will boot gunicorn running over port 8000. 
-The gunicorn calls also references key and cert files that can be used for end-to-end encryption. These can be created
+The gunicorn calls also reference key and cert files that can be used for end-to-end encryption. These can be created
 with OpenSSL. 
 
 ```bash
